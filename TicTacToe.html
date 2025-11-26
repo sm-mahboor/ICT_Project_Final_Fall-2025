@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TIC-TAC-TOE Game</title>
+    <style>
+      * {
+        margin: 0%;
+        padding: 0%;
+      }
+      /* set the margin and padding of the entire containers to 0% by default. */
+
+      h1 {
+        color: white;
+      }
+      body {
+        text-align: center;
+        background-color: #071024;
+      }
+      .container {
+        height: 70vh;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+      }
+      .game {
+        height: 60vmin;
+        width: 60vmin;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 1.5vmin;
+      }
+
+      .box {
+        height: 18vmin;
+        width: 18vmin;
+        border-radius: 1rem;
+        /* unit for border radius are rem ,px,% etc. */
+        border: none;
+        font-size: 8vmin;
+        font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+        font-weight: 200;
+        background-color: #0ea5a1;
+        color: white;
+      }
+      #Reset_button {
+        padding: 1rem;
+        font-size: medium;
+        border-radius: 1rem;
+        color: white;
+        background-color: #0ea5a1;
+        font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+        cursor: pointer;
+      }
+      .msg-container {
+        height: 30vmin;
+      }
+      #msg {
+        color: white;
+        font-size: 8vmin;
+        font-weight: bold;
+        font-style: italic;
+      }
+      .hide {
+        display: none;
+      }
+      #BackButton {
+        background: #096966;
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        max-width: 200px;
+        font-weight: bold;
+        font-style: italic;
+        position: fixed;
+        top: 20px;
+        left: 20px;
+      }
+      #BackToHome {
+        background: #096966;
+        color: white;
+        margin: auto;
+        width: 200px;
+        height: 50px;
+        border-radius: 10%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="BackButton">
+      <a href="index.html" id="BackToHome">BACK TO HOME</a>
+    </div>
+    <h1>Tic Tac Toe</h1>
+    <div class="container">
+      <div class="game">
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+      </div>
+    </div>
+    <button id="Reset_button">New Game</button>
+
+    <div class="msg-container hide">
+      <p id="msg">Winner</p>
+    </div>
+
+    <script>
+      // Select all the 9 boxes
+      let boxes = document.querySelectorAll(".box");
+
+      // Select reset button
+      let resetBtn = document.querySelector("#Reset_button");
+
+      // Select message container
+      let msgContainer = document.querySelector(".msg-container");
+
+      // Select the winner message text
+      let msg = document.querySelector("#msg");
+
+      // Track whose turn it is (true = O, false = X)
+      let turnO = true;
+
+      // All winning combinations
+      const winPattern = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+      ];
+
+      // Disable all boxes when someone wins
+      const disableBoxes = () => {
+        boxes.forEach((box) => (box.disabled = true)); // disable each button
+      };
+
+      // Enable all boxes and clear them for new game
+      const enableBoxes = () => {
+        boxes.forEach((box) => {
+          box.disabled = false; // allow clicking again
+          box.innerText = ""; // clear X/O
+        });
+      };
+
+      // Function to show winner message
+      const showWinner = (winner) => {
+        msg.innerText = `Winner is ${winner}`; // set message text
+        msgContainer.classList.remove("hide"); // show winner box
+        disableBoxes(); // stop the game
+      };
+
+      // Add click event to each box
+      boxes.forEach((box) => {
+        box.addEventListener("click", () => {
+          // If it's O's turn
+          if (turnO) {
+            box.innerText = "O"; // put O
+            turnO = false; // next turn X
+          }
+
+          // If it's X's turn
+          else {
+            box.innerText = "X"; // put X
+            turnO = true; // next turn O
+          }
+
+          box.disabled = true; // prevent overwriting
+          checkWinner(); // check if someone won
+        });
+      });
+
+      // Function to check if any winning pattern is matched
+      const checkWinner = () => {
+        // Loop through each winning pattern
+        for (let pattern of winPattern) {
+          // Read the values of the 3 boxes in pattern
+          let pos1 = boxes[pattern[0]].innerText;
+          let pos2 = boxes[pattern[1]].innerText;
+          let pos3 = boxes[pattern[2]].innerText;
+
+          // If all 3 boxes are filled
+          if (pos1 !== "" && pos2 !== "" && pos3 !== "") {
+            // If all 3 have same value → winner
+            if (pos1 === pos2 && pos2 === pos3) {
+              showWinner(pos1); // display winner
+            }
+          }
+        }
+      };
+
+      // Reset button click event
+      resetBtn.addEventListener("click", () => {
+        turnO = true; // start with O again
+        enableBoxes(); // clear board
+        msgContainer.classList.add("hide"); // hide winner message
+      });
+    </script>
+  </body>
+</html>
